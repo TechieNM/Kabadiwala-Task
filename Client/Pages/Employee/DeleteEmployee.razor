@@ -1,0 +1,65 @@
+﻿@page "/employee/delete/{empId}"
+@inject HttpClient Http
+@inject Microsoft.AspNetCore.Components.NavigationManager navigation
+@using BlazorCrud.Shared.Models
+@using System.Net.Http.Json
+
+
+<h2>Delete</h2>
+<h3>Are you sure you want to delete employee with id : @empId</h3>
+<br />
+
+<div class="col-md-4">
+    <table class="table">
+        <tr>
+            <td>Name</td>
+            <td>@emp.Name</td>
+        </tr>
+        <tr>
+            <td>Designation</td>
+            <td>@emp.Designation</td>
+        </tr>
+        <tr>
+            <td>Email</td>
+            <td>@emp.Emailid</td>
+        </tr>
+        <tr>
+            <td>Location</td>
+            <td>@emp.location</td>
+        </tr>
+        <tr>
+            <td>Phone</td>
+            <td>@emp.ContactNo</td>
+        </tr>
+    </table>
+    <div class="form-group">
+        <input type="submit" value="Delete" @onclick="@(async () => { await Delete(); })" class="btn btn-default" style="background-color:brown" />
+        <input type="submit" value="Cancel" @onclick="@cancel" class="btn" style="background-color:brown"/>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string empId { get; set; }
+
+    EmployeeModel emp = new EmployeeModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        emp = await Http.GetFromJsonAsync<EmployeeModel>
+        ("/api/Employee/" + Convert.ToInt64(empId));
+    }
+
+    protected async Task Delete()
+    {
+        await Http.DeleteAsync("api/Employee/" + Convert.ToInt64(empId));
+        navigation.NavigateTo("/employee");
+    }
+
+    void cancel()
+    {
+        navigation.NavigateTo("/employee");
+    }
+
+}

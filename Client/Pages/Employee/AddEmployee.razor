@@ -1,0 +1,67 @@
+﻿@page "/employee/add"
+@inherits GetEmployeeComponent
+@inject HttpClient client
+@inject NavigationManager navigation
+@using BlazorCrud.Shared.Models
+@using Microsoft.AspNetCore.Components.Forms
+@using System.Net
+<h1>Create</h1>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <EditForm Model="@emp" OnValidSubmit="CreateEmployee">
+            <DataAnnotationsValidator />
+            <div class="form-group">
+                <label for="Name" class="control-label">Name</label>
+                <InputText for="Name" class="form-control" @bind-Value="@emp.Name" />
+                <ValidationMessage For="@(()=>emp.Name)"></ValidationMessage>
+            </div>
+            <div class="form-group">
+                <label asp-for="Designation" class="control-label">Designation</label>
+                <input for="Designation" class="form-control" @bind="@emp.Designation" />
+                <ValidationMessage For="@(()=>emp.Designation)"></ValidationMessage>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label">Email</label>
+                <input asp-for="Email" class="form-control" @bind="@emp.Emailid" />
+                <ValidationMessage For="@(()=>emp.Emailid)"></ValidationMessage>
+            </div>
+            <div class="form-group">
+                <label asp-for="Location" class="control-label">Location</label>
+                <input asp-for="Location" class="form-control" @bind="@emp.location" />
+                <ValidationMessage For="@(()=>emp.location)"></ValidationMessage>
+            </div>
+            <div class="form-group">
+                <label asp-for="Phone" class="control-label">Phone</label>
+                <input asp-for="Phone" class="form-control" @bind="@emp.ContactNo" />
+                <ValidationMessage For="@(()=>emp.ContactNo)"></ValidationMessage>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-default" style="background-color:brown">Save</button>
+                <button class="btn" @onclick="@cancel" style="background-color:brown">Cancel</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+
+
+    EmployeeModel emp = new EmployeeModel();
+
+    protected async Task CreateEmployee()
+    {
+        var responst = await client.PostAsJsonAsync("/api/Employee", emp);
+        if (responst.StatusCode == HttpStatusCode.OK)
+        {
+            navigation.NavigateTo("/employee");
+        }
+    }
+
+    void cancel()
+    {
+        navigation.NavigateTo("/employee");
+    }
+}

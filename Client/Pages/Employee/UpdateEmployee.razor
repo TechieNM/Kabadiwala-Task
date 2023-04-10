@@ -1,0 +1,75 @@
+﻿@page "/employee/edit/{empID}"
+@inject HttpClient Http
+@inject Microsoft.AspNetCore.Components.NavigationManager navigation
+@using BlazorCrud.Shared.Models
+@using System.Net
+
+<h2>Edit</h2>
+<h4>Employees</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <EditForm Model="@emp" OnValidSubmit="Update">
+            <DataAnnotationsValidator />
+            <div class="form-group">
+                <label for="Name" class="control-label">Name</label>
+                <InputText for="Name" class="form-control" @bind-Value="@emp.Name" />
+                <ValidationMessage For="@(()=>emp.Name)"></ValidationMessage>
+            </div>
+            <div class="form-group">
+                <label asp-for="Designation" class="control-label">Designation</label>
+                <InputText for="Designation" class="form-control" @bind-Value="@emp.Designation" />
+                <ValidationMessage For="@(()=>emp.Designation)"></ValidationMessage>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label">Email</label>
+                <InputText asp-for="Email" class="form-control" @bind-Value="@emp.Emailid" />
+                <ValidationMessage For="@(()=>emp.Emailid)"></ValidationMessage>
+            </div>
+            <div class="form-group">
+                <label asp-for="Location" class="control-label">Location</label>
+                <InputText asp-for="Location" class="form-control" @bind-Value="@emp.location" />
+                <ValidationMessage For="@(()=>emp.location)"></ValidationMessage>
+            </div>
+            <div class=" form-group">
+                <label class="control-label">Phone</label>
+                <InputNumber class="form-control" @bind-Value="@emp.ContactNo" />
+                <ValidationMessage For="@(()=>emp.ContactNo)"></ValidationMessage>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" style="background-color:brown" @onclick="@(async () => {await Update(); })" />
+                <input type="submit" value="Cancel" @onclick="@cancel" class="btn" style="background-color:brown"/>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code{
+
+    [Parameter]
+    public string empID { get; set; }
+
+    EmployeeModel emp = new EmployeeModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        emp = await Http.GetFromJsonAsync<EmployeeModel>("/api/employee/" + Convert.ToInt64(empID));
+    }
+
+    protected async Task Update()
+    {
+        var responst = await Http.PutAsJsonAsync("api/Employee", emp);
+        if (responst.StatusCode == HttpStatusCode.OK)
+        {
+            navigation.NavigateTo("/employee");
+        }
+
+    }
+
+    void cancel()
+    {
+        navigation.NavigateTo("/employee");
+
+    }
+}

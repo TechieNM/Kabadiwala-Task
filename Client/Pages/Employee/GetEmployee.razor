@@ -1,0 +1,51 @@
+﻿@page "/employee"
+@inherits GetEmployeeComponent
+
+<h1 style="color: #69002D" align="center"><b>EMPLOYEE DETAILS</b></h1>
+<style>
+    .button {
+        background: #69002D;
+        padding: 10px;
+        color: white;
+    }
+</style>
+<p>
+    <a href="/employee/add" class="button">Create</a>
+</p>
+
+@if (EmployeeList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class='table'>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Designation</th>
+                <th>Email</th>
+                <th>Location</th>
+                <th>Phone</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var emp in EmployeeList)
+            {
+                <tr>
+                    <td>@emp.Name</td>
+                    <td>@emp.Designation</td>
+                    <td>@emp.Emailid</td>
+                    <td>@emp.location</td>
+                    <td>@emp.ContactNo</td>
+                    <td>
+                        <a href='/employee/edit/@emp.EmployeeId' class="button">Edit</a>  |
+                        <a href='/employee/delete/@emp.EmployeeId' class="button">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
